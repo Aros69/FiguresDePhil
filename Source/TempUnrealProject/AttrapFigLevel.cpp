@@ -81,8 +81,8 @@ void AAttrapFigLevel::BeginPlay()
 		}
 	}
 	if (pipe1 != nullptr && pipe2 != nullptr) {
-		pipe1->setText(figStyle[indexFig1]);
-		pipe2->setText(figStyle[indexFig2]);
+		pipe1->setText(figType[indexFig1]);
+		pipe2->setText(figType[indexFig2]);
 	}
 }
 
@@ -166,14 +166,14 @@ void AAttrapFigLevel::initBalls() {
 	if (ballArray.Num() != 0) {
 		// Tirage aléatoire du premier type de figure, récupéartion du fichier et des figures expemples	
 		indexFig1 = FMath::RandHelper(figStyleLength);
-		FString figureFile = ReadFile("Figures/" + figStyle[indexFig1] + ".txt");
-		int nbFig = numberOfLine(figureFile);
-		TArray<FString> figures1;
-		for (int i = 0; i < nbFig - 1; ++i) {
+		//FString figureFile = ReadFile("Figures/" + figStyle[indexFig1] + ".txt");
+		int nbFig = figStyle[indexFig1].Num();
+		TArray<FString> figures1 = figStyle[indexFig1];
+		/*for (int i = 0; i < nbFig - 1; ++i) {
 			figures1.Add(FString());
 			figureFile.Split("\n", &figures1.Top(), &figureFile, ESearchCase::IgnoreCase, ESearchDir::FromStart);
 		}
-		figures1.Add(figureFile);
+		figures1.Add(figureFile);*/
 
 		// Récupération aléatoire des 3 premières figures de styles
 		TArray<int> tempArray;
@@ -198,14 +198,14 @@ void AAttrapFigLevel::initBalls() {
 		do {
 			indexFig2 = FMath::RandHelper(figStyleLength);
 		} while (indexFig2 == indexFig1);
-		figureFile = ReadFile("Figures/" + figStyle[indexFig2] + ".txt");
-		nbFig = numberOfLine(figureFile);
-		TArray<FString> figures2;
-		for (int i = 0; i < nbFig - 1; ++i) {
+		//figureFile = ReadFile("Figures/" + figStyle[indexFig2] + ".txt");
+		nbFig = figStyle[indexFig2].Num();
+		TArray<FString> figures2 = figStyle[indexFig2];
+		/*for (int i = 0; i < nbFig - 1; ++i) {
 			figures2.Add(FString());
 			figureFile.Split("\n", &figures2.Top(), &figureFile, ESearchCase::IgnoreCase, ESearchDir::FromStart);
 		}
-		figures2.Add(figureFile);
+		figures2.Add(figureFile);*/
 
 		// Récupération aléatoire des 3 premières figures de styles
 		tempArray.Empty();
