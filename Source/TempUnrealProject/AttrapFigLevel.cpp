@@ -126,6 +126,28 @@ void AAttrapFigLevel::BeginPlay()
 void AAttrapFigLevel::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	checkBalls();
+}
+
+void AAttrapFigLevel::checkBalls() {
+	for (int i = 0; i < 6; i++) {
+		if (ballArray[i] != nullptr) {
+			if (ballArray[i]->isDone == 1) {
+				// Print bien joué !
+				GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Red, "Nice AttrapFig");
+				ballArray[i]->isDone = -1;
+				ballArray[i] = nullptr;
+				ballsRemain--;
+			}
+			else if (ballArray[i]->isDone == 2) {
+				// Print pas de chance
+				GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Red, "Bad Attra^Fig");
+				ballArray[i]->isDone = -1;
+				ballArray[i] = nullptr;
+				ballsRemain--;
+			}
+		}
+	}
 }
 
 AActor* AAttrapFigLevel::spawnActor(TSubclassOf<class AActor> objectToSpawn, 

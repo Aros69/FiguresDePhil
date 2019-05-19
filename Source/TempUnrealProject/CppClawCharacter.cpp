@@ -45,20 +45,27 @@ void ACppClawCharacter::Tick(float DeltaTime){
 		}
 		else if (NewLocation.X > 260) {
 			NewLocation.X = 260;
+		} else {
+			NewLocation.X += movementInput;
+			if (ballCatch != nullptr) {
+				lastBallLocation.X += movementInput;
+			}
 		}
-		NewLocation.X += movementInput;
 	} else {
 		NewLocation.Z += movementInput;
+		if (ballCatch != nullptr) {
+			lastBallLocation.Z += movementInput;
+		}
 		if (NewLocation.Z >= 120 && movementInput>0) {
 			isInAction = !isInAction;
 			movementInput = 0;
-			if (ballCatch != nullptr) {
-				GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Red, ballCatch->GetName());
-			}
 		}
 		if (NewLocation.Z <= -120) {
 			movementInput = 2;
 		}
+	}
+	if (ballCatch != nullptr) {
+		ballCatch->SetActorLocation(lastBallLocation);
 	}
 	SetActorLocation(NewLocation);
 }
@@ -84,11 +91,14 @@ void ACppClawCharacter::Stop(){
 void ACppClawCharacter::Action(){
 	if (!isInAction) {
 		if (ballCatch == nullptr) {
+			//GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Red, "Je descend");
 			movementInput = -2;
 			isInAction = !isInAction;
 		}
 		else {
-			ballCatch == nullptr;
+			//GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Red, "Je lache");
+			((UPrimitiveComponent*)ballCatch->GetRootComponent())->SetSimulatePhysics(true);
+			ballCatch = nullptr;
 		}
 	}
 }
@@ -105,6 +115,8 @@ void ACppClawCharacter::NotifyHit(UPrimitiveComponent * MyComp, AActor * Other, 
 		else if (Other->GetClass()->IsChildOf(ABallCharacter::StaticClass())) {
 			if (ballCatch == nullptr) {
 				ballCatch = (ABallCharacter*)Other;
+				lastBallLocation = ballCatch->GetActorLocation();
+				((UPrimitiveComponent*)ballCatch->GetRootComponent())->SetSimulatePhysics(false);
 			}
 			movementInput = 1;
 		}

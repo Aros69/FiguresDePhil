@@ -34,6 +34,8 @@ public:
 				bool bSelfMoved, FVector HitLocation, FVector HitNormal, FVector NormalImpulse,
 				const FHitResult & Hit) override;
 
+	int isDone;
+
 
 protected:
 	// Called when the game starts or when spawned

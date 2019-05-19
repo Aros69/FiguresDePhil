@@ -42,6 +42,7 @@ ABallCharacter::ABallCharacter(const class FObjectInitializer& PCIP) : Super(PCI
         FRotator r(0,90,0);
         text->SetRelativeRotation(r);
         setText("Init Text Ball");
+		isDone = 0;
         /*if(GEngine)
     	    { GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, TEXT("YES")); }*/
     }
@@ -57,6 +58,10 @@ void ABallCharacter::BeginPlay()
 void ABallCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	if (isDone == -1) {
+		GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Red, "Killing myself");
+		Destroy();
+	}
     /*FVector pos = GetActorLocation();
     pos.X += 0.5;
     SetActorLocation(pos);*/
@@ -119,12 +124,12 @@ void ABallCharacter::NotifyHit(UPrimitiveComponent * MyComp, AActor * Other, UPr
 	{
 		if (Other->GetClass()->IsChildOf(APipeActor::StaticClass())) {
 			if (GetActorLocation().Z > -20) {
-				if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Green, FString::Printf(TEXT("I Hit: %s"), *Other->GetName()));
+				//if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Green, FString::Printf(TEXT("I Hit: %s"), *Other->GetName()));
 				if (((APipeActor*)Other)->figType == figType) {
-					GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Red, "Nice");
+					isDone = 1;
 				}
 				else {
-					GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Red, "Bad");
+					isDone = 2;
 				}
 			}
 		}

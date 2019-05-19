@@ -32,6 +32,7 @@ public:
 	TArray<ABallCharacter *> ballArray;
 	APipeActor * pipe1;
 	APipeActor * pipe2;
+	int ballsRemain = 6;
 
 protected:
 	// Called when the game starts or when spawned
@@ -46,6 +47,8 @@ public:
 			FRotator rotation, FVector position);
 
 	int numberOfLine(FString file);
+
+	void checkBalls();
 	
 
 private:

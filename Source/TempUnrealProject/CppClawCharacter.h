@@ -43,5 +43,6 @@ protected:
 	void Action();
 
 	ABallCharacter* ballCatch;
+	FVector lastBallLocation;
 
 };
