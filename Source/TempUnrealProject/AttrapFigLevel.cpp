@@ -25,6 +25,26 @@ AAttrapFigLevel::AAttrapFigLevel()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+
+	text = CreateDefaultSubobject<UTextRenderComponent>("GeneratedGameText");
+	if (text == nullptr) {}
+	else {
+		text->AttachToComponent(this->GetRootComponent(), FAttachmentTransformRules::KeepRelativeTransform);
+		text->SetVisibility(true);
+		text->SetHorizontalAlignment(EHorizTextAligment::EHTA_Center);
+		text->SetXScale(5);
+		text->SetYScale(5);
+		text->SetWorldSize(10.f);
+		/*FVector l(0, 1, -25);
+		text->SetRelativeLocation(l);*/
+		FHitResult SweepHitResult;
+		text->K2_SetWorldLocation(FVector(0, 100, 0), false, SweepHitResult, true);
+
+		// Put the text in front of the camera
+		/*FRotator r(0, 90, 0);
+		text->SetRelativeRotation(r);*/
+		text->K2_SetText(FText::FromString("Base Text Game"));
+	}
 }
 	
 
@@ -40,69 +60,13 @@ void AAttrapFigLevel::BeginPlay()
 	}
 	TArray<AActor *> actors;
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), BallClass, actors);
-	for (int i = 0; i < 6; ++i) {
+	for (int i = 0; i < actors.Num(); ++i) {
 		ballArray.Add((ABallCharacter*)actors[i]);
 	}
 
-	// Tirage aléatoire du premier type de figure, récupéartion du fichier et des figures expemples	
-	indexFig1 = FMath::RandHelper(figStyleLength);
-	FString figureFile = ReadFile("Figures/"+figStyle[indexFig1]+".txt");
-	int nbFig = numberOfLine(figureFile);
-	TArray<FString> figures1;
-	for(int i=0;i<nbFig-1;++i){
-		figures1.Add(FString());
-		figureFile.Split("\n", &figures1.Top(), &figureFile, ESearchCase::IgnoreCase, ESearchDir::FromStart);	
+	if (ballArray.Num() != 0) {
+		initBalls();
 	}
-	figures1.Add(figureFile);
-
-	// Récupération aléatoire des 3 premières figures de styles
-	TArray<int> tempArray;
-	for(int i=0;i<nbFig;++i){
-		tempArray.Add(i);
-	}
-	int fig1 = FMath::RandHelper(nbFig), fig2, fig3;
-	tempArray.Remove(fig1);
-	fig2 = tempArray[FMath::RandHelper(nbFig-1)];
-	tempArray.Remove(fig2);
-	fig3 = tempArray[FMath::RandHelper(nbFig-2)];
-
-	ballArray[0]->setText(figures1[fig1]);
-	ballArray[0]->figType = 1;
-	ballArray[1]->setText(figures1[fig2]);
-	ballArray[1]->figType = 1;
-	ballArray[2]->setText(figures1[fig3]);
-	ballArray[2]->figType = 1;
-
-	// Tirage aléatoire du second type de figure
-	do {
-		indexFig2 = FMath::RandHelper(figStyleLength);
-	} while(indexFig2==indexFig1);
-	figureFile = ReadFile("Figures/"+figStyle[indexFig2]+".txt");
-	nbFig = numberOfLine(figureFile);
-	TArray<FString> figures2;
-	for(int i=0;i<nbFig-1;++i){
-		figures2.Add(FString());
-		figureFile.Split("\n", &figures2.Top(), &figureFile, ESearchCase::IgnoreCase, ESearchDir::FromStart);	
-	}
-	figures2.Add(figureFile);
-
-	// Récupération aléatoire des 3 premières figures de styles
-	tempArray.Empty();
-	for(int i=0;i<nbFig;++i){
-		tempArray.Add(i);
-	}
-	fig1 = FMath::RandHelper(nbFig);
-	tempArray.Remove(fig1);
-	fig2 = tempArray[FMath::RandHelper(nbFig-1)];
-	tempArray.Remove(fig2);
-	fig3 = tempArray[FMath::RandHelper(nbFig-2)];
-
-	ballArray[3]->setText(figures2[fig1]);
-	ballArray[3]->figType = 2;
-	ballArray[4]->setText(figures2[fig2]);
-	ballArray[4]->figType = 2;
-	ballArray[5]->setText(figures2[fig3]);
-	ballArray[5]->figType = 2;
 
 	for (TActorIterator<APipeActor> ActorItr(GetWorld()); ActorItr; ++ActorItr)
 	{
@@ -126,22 +90,30 @@ void AAttrapFigLevel::BeginPlay()
 void AAttrapFigLevel::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	if (!initBallOK && ballArray.Num() != 0) {
+		initBalls();
+	}
+	text->SetXScale(text->XScale+1);
+	text->SetYScale(text->YScale+1);
 	checkBalls();
+	if (ballsRemain == 0) {
+		// We are in the endgame now
+	}
 }
 
 void AAttrapFigLevel::checkBalls() {
-	for (int i = 0; i < 6; i++) {
+	for (int i = 0; i < ballArray.Num(); i++) {
 		if (ballArray[i] != nullptr) {
 			if (ballArray[i]->isDone == 1) {
 				// Print bien joué !
-				GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Red, "Nice AttrapFig");
+				//GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Red, "Nice AttrapFig");
 				ballArray[i]->isDone = -1;
 				ballArray[i] = nullptr;
 				ballsRemain--;
 			}
 			else if (ballArray[i]->isDone == 2) {
 				// Print pas de chance
-				GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Red, "Bad Attra^Fig");
+				//GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Red, "Bad AttrapFig");
 				ballArray[i]->isDone = -1;
 				ballArray[i] = nullptr;
 				ballsRemain--;
@@ -184,66 +156,75 @@ int AAttrapFigLevel::numberOfLine(FString file) {
 	return res;
 }
 
-// Tableau de postion initial des balles pour avoir postions des balles aléatoires
-/*TArray<FVector> positionsInitBall;
-int sizeArray = 6;
-for (int i = 0; i < 3; ++i) {
-	positionsInitBall.Add(FVector((-100.0 + 100.0*i), 90.0, 0.0));
-	positionsInitBall.Add(FVector((-100.0 + 100.0*i), 90.0, -100.0));
-}*/
-
-// Création des balles de la première figures de style
-	/*FActorSpawnParameters spawnParam;
-	spawnParam.Owner = this;
-	FVector position;
-	FRotator rotator;
-
-	/
-	position = positionsInitBall[FMath::RandHelper(sizeArray)];
-	ballArray.Add((ABallCharacter*) spawnActor(toSpawnBall, spawnParam, rotator, position));
-	positionsInitBall.Remove(position); sizeArray--;
-	//DebugString(figures1[fig1]);
-	if (ballArray.Top() != nullptr) {
-		ballArray.Top()->setText(figures1[fig1]);
+void AAttrapFigLevel::initBalls() {
+	TArray<AActor *> actors;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), BallClass, actors);
+	for (int i = 0; i < actors.Num(); ++i) {
+		ballArray.Add((ABallCharacter*)actors[i]);
 	}
 
-	position = positionsInitBall[FMath::RandHelper(sizeArray)];
-	ballArray.Add((ABallCharacter*) spawnActor(toSpawnBall, spawnParam, rotator, position));
-	positionsInitBall.Remove(position); sizeArray--;
-	//DebugString(figures1[fig2]);
-	if (ballArray.Top() != nullptr) {
-		ballArray.Top()->setText(figures1[fig2]);
+	if (ballArray.Num() != 0) {
+		// Tirage aléatoire du premier type de figure, récupéartion du fichier et des figures expemples	
+		indexFig1 = FMath::RandHelper(figStyleLength);
+		FString figureFile = ReadFile("Figures/" + figStyle[indexFig1] + ".txt");
+		int nbFig = numberOfLine(figureFile);
+		TArray<FString> figures1;
+		for (int i = 0; i < nbFig - 1; ++i) {
+			figures1.Add(FString());
+			figureFile.Split("\n", &figures1.Top(), &figureFile, ESearchCase::IgnoreCase, ESearchDir::FromStart);
+		}
+		figures1.Add(figureFile);
+
+		// Récupération aléatoire des 3 premières figures de styles
+		TArray<int> tempArray;
+		for (int i = 0; i < nbFig; ++i) {
+			tempArray.Add(i);
+		}
+
+		int fig1 = FMath::RandHelper(nbFig), fig2, fig3;
+		tempArray.Remove(fig1);
+		fig2 = tempArray[FMath::RandHelper(nbFig - 1)];
+		tempArray.Remove(fig2);
+		fig3 = tempArray[FMath::RandHelper(nbFig - 2)];
+
+		ballArray[0]->setText(figures1[fig1]);
+		ballArray[0]->figType = 1;
+		ballArray[1]->setText(figures1[fig2]);
+		ballArray[1]->figType = 1;
+		ballArray[2]->setText(figures1[fig3]);
+		ballArray[2]->figType = 1;
+
+		// Tirage aléatoire du second type de figure
+		do {
+			indexFig2 = FMath::RandHelper(figStyleLength);
+		} while (indexFig2 == indexFig1);
+		figureFile = ReadFile("Figures/" + figStyle[indexFig2] + ".txt");
+		nbFig = numberOfLine(figureFile);
+		TArray<FString> figures2;
+		for (int i = 0; i < nbFig - 1; ++i) {
+			figures2.Add(FString());
+			figureFile.Split("\n", &figures2.Top(), &figureFile, ESearchCase::IgnoreCase, ESearchDir::FromStart);
+		}
+		figures2.Add(figureFile);
+
+		// Récupération aléatoire des 3 premières figures de styles
+		tempArray.Empty();
+		for (int i = 0; i < nbFig; ++i) {
+			tempArray.Add(i);
+		}
+		fig1 = FMath::RandHelper(nbFig);
+		tempArray.Remove(fig1);
+		fig2 = tempArray[FMath::RandHelper(nbFig - 1)];
+		tempArray.Remove(fig2);
+		fig3 = tempArray[FMath::RandHelper(nbFig - 2)];
+
+		ballArray[3]->setText(figures2[fig1]);
+		ballArray[3]->figType = 2;
+		ballArray[4]->setText(figures2[fig2]);
+		ballArray[4]->figType = 2;
+		ballArray[5]->setText(figures2[fig3]);
+		ballArray[5]->figType = 2;
+
+		initBallOK = true;
 	}
-
-	position = positionsInitBall[FMath::RandHelper(sizeArray)];
-	ballArray.Add((ABallCharacter*) spawnActor(toSpawnBall, spawnParam, rotator, position));
-	positionsInitBall.Remove(position); sizeArray--;
-	//DebugString(figures1[fig3]);
-	if (ballArray.Top() != nullptr) {
-		ballArray.Top()->setText(figures1[fig3]);
-	}*/
-
-// Création des balles de la première figures de style
-	/*position = positionsInitBall[FMath::RandHelper(sizeArray)];
-	ballArray.Add((ABallCharacter*) spawnActor(toSpawnBall, spawnParam, rotator, position));
-	positionsInitBall.Remove(position); sizeArray--;
-	//DebugString(figures2[fig1]);
-	if (ballArray.Top() != nullptr) {
-		ballArray.Top()->setText(figures2[fig1]);
-	}
-
-	position = positionsInitBall[FMath::RandHelper(sizeArray)];
-	ballArray.Add((ABallCharacter*) spawnActor(toSpawnBall, spawnParam, rotator, position));
-	positionsInitBall.Remove(position); sizeArray--;
-	//DebugString(figures2[fig2]);
-	if (ballArray.Top() != nullptr) {
-		ballArray.Top()->setText(figures2[fig2]);
-	}
-
-	position = positionsInitBall[FMath::RandHelper(sizeArray)];
-	ballArray.Add((ABallCharacter*) spawnActor(toSpawnBall, spawnParam, rotator, position));
-	positionsInitBall.Remove(position); sizeArray--;
-	//DebugString(figures2[fig3]);
-	if (ballArray.Top() != nullptr) {
-		ballArray.Top()->setText(figures2[fig3]);
-	}*/
+}

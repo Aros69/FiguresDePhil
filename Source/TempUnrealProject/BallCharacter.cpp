@@ -59,7 +59,7 @@ void ABallCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 	if (isDone == -1) {
-		GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Red, "Killing myself");
+		//GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Red, "Killing myself");
 		Destroy();
 	}
     /*FVector pos = GetActorLocation();

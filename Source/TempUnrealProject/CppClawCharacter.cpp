@@ -48,6 +48,12 @@ void ACppClawCharacter::Tick(float DeltaTime){
 		} else {
 			NewLocation.X += movementInput;
 			if (ballCatch != nullptr) {
+				if (lastBallLocation.X < -260) {
+					lastBallLocation.X = -260;
+				}
+				else if (lastBallLocation.X > 260) {
+					lastBallLocation.X = 260;
+				}
 				lastBallLocation.X += movementInput;
 			}
 		}

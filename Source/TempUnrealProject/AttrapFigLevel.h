@@ -22,6 +22,9 @@ public:
 
 	FString ReadFile(FString filename); 
 
+	UPROPERTY(VisibleInstanceOnly)
+	UTextRenderComponent* text;
+
 	// Needs to be populated somehow (e.g. by exposing to blueprints as uproperty and setting it there
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<AActor> BallClass; 
@@ -49,6 +52,8 @@ public:
 	int numberOfLine(FString file);
 
 	void checkBalls();
+
+	void initBalls();
 	
 
 private:
@@ -57,4 +62,6 @@ private:
 
 	int indexFig1;
 	int indexFig2;
+
+	int initBallOK = false;
 };
