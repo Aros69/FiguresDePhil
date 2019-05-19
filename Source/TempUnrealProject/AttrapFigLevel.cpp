@@ -32,18 +32,16 @@ AAttrapFigLevel::AAttrapFigLevel()
 		text->AttachToComponent(this->GetRootComponent(), FAttachmentTransformRules::KeepRelativeTransform);
 		text->SetVisibility(true);
 		text->SetHorizontalAlignment(EHorizTextAligment::EHTA_Center);
-		text->SetXScale(5);
-		text->SetYScale(5);
 		text->SetWorldSize(10.f);
 		/*FVector l(0, 1, -25);
 		text->SetRelativeLocation(l);*/
-		FHitResult SweepHitResult;
-		text->K2_SetWorldLocation(FVector(0, 100, 0), false, SweepHitResult, true);
+		/*FHitResult SweepHitResult;
+		text->K2_SetWorldLocation(FVector(0, 150, 0), false, SweepHitResult, true);*/
 
 		// Put the text in front of the camera
-		/*FRotator r(0, 90, 0);
-		text->SetRelativeRotation(r);*/
-		text->K2_SetText(FText::FromString("Base Text Game"));
+		/*FRotator r(0, 0, 90);
+		text->K2_SetWorldRotation(r, false, SweepHitResult, true);*/
+		text->K2_SetText(FText::FromString(""));
 	}
 }
 	
@@ -53,7 +51,19 @@ void AAttrapFigLevel::BeginPlay()
 {
 	Super::BeginPlay();
 	// Récuếration du monde pour créer à l'execution des objets dans le monde
-	
+
+	FVector pos = text->GetComponentLocation();
+	pos.Z -= 50;
+	FHitResult SweepHitResult;
+	text->K2_SetWorldLocation(pos, false, SweepHitResult, true);
+
+	/*FHitResult SweepHitResult;
+	text->K2_SetWorldLocation(FVector(0, 150, 0), false, SweepHitResult, true);
+	FRotator r(0, 0, 90);
+	text->K2_SetWorldRotation(r, false, SweepHitResult, true);*/
+	text->SetXScale(2);
+	text->SetYScale(2);
+	text->K2_SetText(FText::FromString(""));
 	
 	if(!world){
 		world = GetWorld();
@@ -93,10 +103,19 @@ void AAttrapFigLevel::Tick(float DeltaTime)
 	if (!initBallOK && ballArray.Num() != 0) {
 		initBalls();
 	}
-	text->SetXScale(text->XScale+1);
-	text->SetYScale(text->YScale+1);
 	checkBalls();
 	if (ballsRemain == 0) {
+		FString endText("Niveau termine.\n");
+			endText.Append("Tu as ").Append(FString::FromInt(bonneReponse)).Append(" bonne reponse sur 6.\n");
+		if (bonneReponse >= 4) {
+			endText.Append("Bravo, continues de t'entrainer.\n");
+		}
+		else {
+			endText.Append("Dommage, tu devrais aller dans ton profil\net en apprendre plus sur les figures de styles.\n");
+		}
+		endText.Append("Appuie sur \"echap\" ou sur le bouton start\npour revenir au menu principal.");
+		
+		text->K2_SetText(FText::FromString(endText));
 		// We are in the endgame now
 	}
 }
@@ -106,13 +125,15 @@ void AAttrapFigLevel::checkBalls() {
 		if (ballArray[i] != nullptr) {
 			if (ballArray[i]->isDone == 1) {
 				// Print bien joué !
-				//GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Red, "Nice AttrapFig");
+				text->K2_SetText(FText::FromString("Bonne Reponse !"));
+				bonneReponse++;
 				ballArray[i]->isDone = -1;
 				ballArray[i] = nullptr;
 				ballsRemain--;
 			}
 			else if (ballArray[i]->isDone == 2) {
 				// Print pas de chance
+				text->K2_SetText(FText::FromString("Mauvaise Reponse :("));
 				//GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Red, "Bad AttrapFig");
 				ballArray[i]->isDone = -1;
 				ballArray[i] = nullptr;

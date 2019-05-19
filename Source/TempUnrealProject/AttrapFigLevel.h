@@ -69,6 +69,7 @@ public:
 	APipeActor * pipe1;
 	APipeActor * pipe2;
 	int ballsRemain = 6;
+	int bonneReponse = 0;
 
 protected:
 	// Called when the game starts or when spawned
