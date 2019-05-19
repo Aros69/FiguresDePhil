@@ -27,22 +27,22 @@ AAttrapFigLevel::AAttrapFigLevel()
 	PrimaryActorTick.bCanEverTick = true;
 
 	text = CreateDefaultSubobject<UTextRenderComponent>("GeneratedGameText");
+	/*
+	text = CreateDefaultSubobject<UTextRenderComponent>("GeneratedGameText");
 	if (text == nullptr) {}
 	else {
-		text->AttachToComponent(this->GetRootComponent(), FAttachmentTransformRules::KeepRelativeTransform);
-		text->SetVisibility(true);
-		text->SetHorizontalAlignment(EHorizTextAligment::EHTA_Center);
-		text->SetWorldSize(10.f);
-		/*FVector l(0, 1, -25);
+		
+		FVector l(0, 1, -25);
 		text->SetRelativeLocation(l);*/
 		/*FHitResult SweepHitResult;
-		text->K2_SetWorldLocation(FVector(0, 150, 0), false, SweepHitResult, true);*/
+		text->K2_SetWorldLocation(FVector(0, 150, 0), false, SweepHitResult, true);
 
 		// Put the text in front of the camera
-		/*FRotator r(0, 0, 90);
-		text->K2_SetWorldRotation(r, false, SweepHitResult, true);*/
+		FRotator r(0, 0, 90);
+		text->K2_SetWorldRotation(r, false, SweepHitResult, true);
 		text->K2_SetText(FText::FromString(""));
 	}
+*/
 }
 	
 
@@ -52,18 +52,26 @@ void AAttrapFigLevel::BeginPlay()
 	Super::BeginPlay();
 	// Récuếration du monde pour créer à l'execution des objets dans le monde
 
-	FVector pos = text->GetComponentLocation();
-	pos.Z -= 50;
-	FHitResult SweepHitResult;
-	text->K2_SetWorldLocation(pos, false, SweepHitResult, true);
-
-	/*FHitResult SweepHitResult;
-	text->K2_SetWorldLocation(FVector(0, 150, 0), false, SweepHitResult, true);
-	FRotator r(0, 0, 90);
-	text->K2_SetWorldRotation(r, false, SweepHitResult, true);*/
-	text->SetXScale(2);
-	text->SetYScale(2);
-	text->K2_SetText(FText::FromString(""));
+	
+	if (text == nullptr) {
+		DebugString("Fuck");
+	}
+	else {
+		//text->AttachToComponent(this->GetRootComponent(), FAttachmentTransformRules::KeepRelativeTransform);
+		text->SetVisibility(true);
+		text->SetHorizontalAlignment(EHorizTextAligment::EHTA_Center);
+		text->SetWorldSize(10.f);
+		FHitResult SweepHitResult;
+		text->K2_SetWorldLocation(FVector(0, 150, 0), false, SweepHitResult, true);
+		FRotator r(0, 0, 90);
+		text->K2_SetWorldRotation(r, false, SweepHitResult, true);
+		text->SetXScale(2);
+		text->SetYScale(2);
+		FVector pos = text->GetComponentLocation();
+		pos.Z -= 50;
+		text->K2_SetWorldLocation(pos, false, SweepHitResult, true);
+		text->K2_SetText(FText::FromString(""));
+	}
 	
 	if(!world){
 		world = GetWorld();
