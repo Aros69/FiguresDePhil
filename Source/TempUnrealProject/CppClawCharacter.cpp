@@ -52,6 +52,9 @@ void ACppClawCharacter::Tick(float DeltaTime){
 		if (NewLocation.Z >= 120 && movementInput>0) {
 			isInAction = !isInAction;
 			movementInput = 0;
+			if (ballCatch != nullptr) {
+				GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Red, ballCatch->GetName());
+			}
 		}
 		if (NewLocation.Z <= -120) {
 			movementInput = 2;
@@ -73,13 +76,20 @@ void ACppClawCharacter::MoveLeft(){
 }
 
 void ACppClawCharacter::Stop(){
-    movementInput = 0;
+	if (!isInAction) {
+		movementInput = 0;
+	}
 }
 
 void ACppClawCharacter::Action(){
 	if (!isInAction) {
-		movementInput = -2;
-		isInAction = !isInAction;
+		if (ballCatch == nullptr) {
+			movementInput = -2;
+			isInAction = !isInAction;
+		}
+		else {
+			ballCatch == nullptr;
+		}
 	}
 }
 
@@ -92,6 +102,12 @@ void ACppClawCharacter::NotifyHit(UPrimitiveComponent * MyComp, AActor * Other, 
 	{
 		if (Other->GetClass()->IsChildOf(APipeActor::StaticClass())) {movementInput = 2;}
 		else if (Other->GetClass()->IsChildOf(ACppClawCharacter::StaticClass())) {}
+		else if (Other->GetClass()->IsChildOf(ABallCharacter::StaticClass())) {
+			if (ballCatch == nullptr) {
+				ballCatch = (ABallCharacter*)Other;
+			}
+			movementInput = 1;
+		}
 		else {movementInput = 1;}
 	}
 }

@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "PaperCharacter.h"
 #include "Components/InputComponent.h"
+#include "BallCharacter.h"
 #include "CppClawCharacter.generated.h"
 
 /**
@@ -18,7 +19,6 @@ class TEMPUNREALPROJECT_API ACppClawCharacter : public APaperCharacter
 public: 
 
 	virtual void Tick(float DeltaTime) override;
-
 
     float movementInput;
 	bool isInAction;
@@ -41,5 +41,7 @@ protected:
 	void Stop();
 
 	void Action();
+
+	ABallCharacter* ballCatch;
 
 };
