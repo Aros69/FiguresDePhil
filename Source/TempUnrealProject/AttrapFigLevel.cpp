@@ -54,22 +54,23 @@ void AAttrapFigLevel::BeginPlay()
 
 	
 	if (text == nullptr) {
-		DebugString("Fuck");
+		//DebugString("Fuck");
 	}
 	else {
 		//text->AttachToComponent(this->GetRootComponent(), FAttachmentTransformRules::KeepRelativeTransform);
 		text->SetVisibility(true);
 		text->SetHorizontalAlignment(EHorizTextAligment::EHTA_Center);
 		text->SetWorldSize(10.f);
-		FHitResult SweepHitResult;
+		/*
 		text->K2_SetWorldLocation(FVector(0, 150, 0), false, SweepHitResult, true);
 		FRotator r(0, 0, 90);
-		text->K2_SetWorldRotation(r, false, SweepHitResult, true);
+		text->K2_SetWorldRotation(r, false, SweepHitResult, true);*/
 		text->SetXScale(2);
 		text->SetYScale(2);
 		FVector pos = text->GetComponentLocation();
+		/*FHitResult SweepHitResult;
 		pos.Z -= 50;
-		text->K2_SetWorldLocation(pos, false, SweepHitResult, true);
+		text->K2_SetWorldLocation(pos, false, SweepHitResult, true);*/
 		text->K2_SetText(FText::FromString(""));
 	}
 	
@@ -114,9 +115,9 @@ void AAttrapFigLevel::Tick(float DeltaTime)
 	checkBalls();
 	if (ballsRemain == 0) {
 		FString endText("Niveau termine.\n");
-			endText.Append("Tu as ").Append(FString::FromInt(bonneReponse)).Append(" bonne reponse sur 6.\n");
+			endText.Append("Tu as ").Append(FString::FromInt(bonneReponse)).Append(" bonnes reponses sur 6.\n");
 		if (bonneReponse >= 4) {
-			endText.Append("Bravo, continues de t'entrainer.\n");
+			endText.Append("Bravo, continue de t'entrainer.\n");
 		}
 		else {
 			endText.Append("Dommage, tu devrais aller dans ton profil\net en apprendre plus sur les figures de styles.\n");
@@ -133,7 +134,7 @@ void AAttrapFigLevel::checkBalls() {
 		if (ballArray[i] != nullptr) {
 			if (ballArray[i]->isDone == 1) {
 				// Print bien joué !
-				text->K2_SetText(FText::FromString("Bonne Reponse !"));
+				text->K2_SetText(FText::FromString("Bonne Reponse :)"));
 				bonneReponse++;
 				ballArray[i]->isDone = -1;
 				ballArray[i] = nullptr;
