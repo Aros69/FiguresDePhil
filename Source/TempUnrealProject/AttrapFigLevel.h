@@ -7,6 +7,8 @@
 #include "GameFramework/Actor.h"
 #include "BallCharacter.h"
 #include "PipeActor.h"
+#include "LearnerProfil.h"
+#include "Kismet/GameplayStatics.h"
 
 
 #include "AttrapFigLevel.generated.h"
@@ -70,6 +72,8 @@ public:
 	APipeActor * pipe2;
 	int ballsRemain = 6;
 	int bonneReponse = 0;
+
+	ULearnerProfil* profil;
 
 protected:
 	// Called when the game starts or when spawned

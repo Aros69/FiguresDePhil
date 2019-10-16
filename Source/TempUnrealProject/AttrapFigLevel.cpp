@@ -27,22 +27,6 @@ AAttrapFigLevel::AAttrapFigLevel()
 	PrimaryActorTick.bCanEverTick = true;
 
 	text = CreateDefaultSubobject<UTextRenderComponent>("GeneratedGameText");
-	/*
-	text = CreateDefaultSubobject<UTextRenderComponent>("GeneratedGameText");
-	if (text == nullptr) {}
-	else {
-		
-		FVector l(0, 1, -25);
-		text->SetRelativeLocation(l);*/
-		/*FHitResult SweepHitResult;
-		text->K2_SetWorldLocation(FVector(0, 150, 0), false, SweepHitResult, true);
-
-		// Put the text in front of the camera
-		FRotator r(0, 0, 90);
-		text->K2_SetWorldRotation(r, false, SweepHitResult, true);
-		text->K2_SetText(FText::FromString(""));
-	}
-*/
 }
 	
 
@@ -103,6 +87,22 @@ void AAttrapFigLevel::BeginPlay()
 		pipe1->setText(figType[indexFig1]);
 		pipe2->setText(figType[indexFig2]);
 	}
+
+	// Récupération de la classe de sauvegarde
+	/*profil = Cast<ULearnerProfil>(UGameplayStatics::CreateSaveGameObject(ULearnerProfil::StaticClass()));
+
+	// Chargement de la sauvegarde : (SaveSlotName, UserIndex)
+	//profil = Cast<ULearnerProfil>(UGameplayStatics::LoadGameFromSlot(profil->SaveSlotName, profil->UserIndex));
+	/*FString PlayerNameToDisplay = profil->PlayerName;
+	if (GEngine)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, PlayerNameToDisplay);
+	}
+	if (profil != nullptr) {
+		profil->PlayerName = "Wesh";
+		// Sauvegarde des données dans la sauvegarde : (SaveSlotName, UserIndex)
+		UGameplayStatics::SaveGameToSlot(profil, profil->SaveSlotName, profil->UserIndex);
+	}*/
 }
 
 // Called every frame
