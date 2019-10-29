@@ -6,8 +6,8 @@
 ![Gameplay Video](Content/Resources/GameGif.gif "Gameplay video")
 
 ## Auteurs
-- Daniel Bensoussan 
-- Robin Donnay 
+- Daniel Bensoussan, dnl413, UI Programmer 
+- Robin Donnay, Aros69, Gameplay Programmer : donnay.robin@gmail.com
 
 # Informations 
  - Executable pour windows 64bits : "FiguresDePhil.exe"  
