@@ -1,12 +1,13 @@
 # Les Figures de Phil  
 
-<!-- ![The Title Screen of the Game](Content/Resources/FigureDePhilMainTitle.jpg "Title Screen") -->;
+<!-- ![The Title Screen of the Game](Content/Resources/FiguresDePhilMainTitle.jpg "Title Screen") -->;
+
 
 ![Gameplay Video](Content/Resources/GameGif.gif "Gameplay video")
 
 ## Auteurs
-Daniel Bensoussan 
-Robin Donnay 
+- Daniel Bensoussan 
+- Robin Donnay 
 
 # Informations 
  - Executable pour windows 64bits : "FiguresDePhil.exe"  
