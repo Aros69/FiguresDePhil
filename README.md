@@ -1,6 +1,8 @@
 # Les Figures de Phil  
 
-![The Title Screen of the Game](Content/Resources/FigureDePhilMainTitle.jpg "Title Screen")
+<!-- ![The Title Screen of the Game](Content/Resources/FigureDePhilMainTitle.jpg "Title Screen") -->;
+
+![Gameplay Video](Content/Resources/GameGif.gif "Gameplay video")
 
 ## Auteurs
 Daniel Bensoussan 
